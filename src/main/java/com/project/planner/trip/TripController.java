@@ -61,4 +61,23 @@ public class TripController {
 
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/{id}/confirm")
+    public ResponseEntity<Trip> confirmTrip(@PathVariable UUID id) {
+
+        Optional<Trip> trip = repository.findById(id); // resultado da busca do banco de dados, procura por uma viagem com esse id
+        //optional é uma opção, talvez a viagem esteja lá, mas pode não estar
+
+        if (trip.isPresent()) { // caso a viagem esteja presente
+            Trip rawTip = trip.get(); // extrai o objeto opcional de dentro do optional
+           rawTip.setIsConfirmed(true); //muda o status de false para true, pois a viagem está confirmada
+
+            this.repository.save(rawTip); // salva no banco de dados
+            this.participantService.triggerConfirmationEmailToParticipants(id); // e-mail de confirmação
+
+            return ResponseEntity.ok(rawTip); // retorna um status 200 ok
+        }
+
+        return ResponseEntity.notFound().build(); // se não manda um notFound
+    }
 }
