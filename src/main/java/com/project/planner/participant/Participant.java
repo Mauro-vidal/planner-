@@ -33,4 +33,11 @@ public class Participant {
     @ManyToOne // uma viagem pode ter muitos participantes e um participante pertence a uma viagem
     @JoinColumn(name = "trip_id", nullable = false) // join na tabela de trip na coluna de chave estrangeira trip_id
     private Trip trip;
+
+    public Participant(String email, Trip trip) {
+        this.email = email;
+        this.trip = trip;
+        this.isConfirmed = false;
+        this.name = "";
+    }
 }
