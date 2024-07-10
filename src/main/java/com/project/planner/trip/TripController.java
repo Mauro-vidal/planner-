@@ -1,5 +1,7 @@
 package com.project.planner.trip;
 
+import com.project.planner.participant.ParticipantCreateResponse;
+import com.project.planner.participant.ParticipantRequestPayload;
 import com.project.planner.participant.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,5 +83,22 @@ public class TripController {
         }
 
         return ResponseEntity.notFound().build(); // se não manda um notFound
+    }
+
+    @PostMapping("/{id}/invite")
+    public ResponseEntity<ParticipantCreateResponse> inviteParticipant(@PathVariable UUID id, @RequestBody ParticipantRequestPayload payload){
+
+        Optional<Trip> trip = this.repository.findById(id);
+
+        if (trip.isPresent()) {
+            Trip rawTrip = trip.get();
+
+            ParticipantCreateResponse participantResponse = this.participantService.registerParticipantToEvent(payload.email(), rawTrip);
+
+            if (rawTrip.getIsConfirmed()) this.participantService.triggerConfirmationEmailToParticipant(payload.email());
+
+            return ResponseEntity.ok(participantResponse);
+        }
+        return ResponseEntity.notFound().build();
     }
 }
