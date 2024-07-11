@@ -1,5 +1,8 @@
 package com.project.planner.trip;
 
+import com.project.planner.activities.ActivityRequestPayload;
+import com.project.planner.activities.ActivityResponse;
+import com.project.planner.activities.ActivityService;
 import com.project.planner.participant.*;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class TripController {
 
     @Autowired
     private ParticipantService participantService;
+
+    @Autowired
+    private ActivityService activityService;
 
     @Autowired
     private TripRepository repository;
@@ -84,6 +90,21 @@ public class TripController {
         return ResponseEntity.notFound().build(); // se não manda um notFound
     }
 
+    @PostMapping("/{id}/activities")
+    public ResponseEntity<ActivityResponse> registerActivity(@PathVariable UUID id, @RequestBody ActivityRequestPayload payload) {
+        Optional<Trip> trip = this.repository.findById(id);
+
+        if (trip.isPresent()){
+            Trip rawTrip =  trip.get();
+
+            ActivityResponse activityResponse = this.activityService.registerActivity(payload, rawTrip);
+
+            return ResponseEntity.ok(activityResponse);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
     @PostMapping("/{id}/invite")
     public ResponseEntity<ParticipantCreateResponse> inviteParticipant(@PathVariable UUID id, @RequestBody ParticipantRequestPayload payload){
 
@@ -108,5 +129,7 @@ public class TripController {
 
         return ResponseEntity.ok(participantsList);
     }
+
+
 
 }
