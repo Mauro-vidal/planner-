@@ -5,14 +5,12 @@ import com.project.planner.activities.ActivityRequestPayload;
 import com.project.planner.activities.ActivityResponse;
 import com.project.planner.activities.ActivityService;
 import com.project.planner.participant.*;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
