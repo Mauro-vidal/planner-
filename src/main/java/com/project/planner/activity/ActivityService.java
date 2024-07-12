@@ -1,4 +1,4 @@
-package com.project.planner.activities;
+package com.project.planner.activity;
 
 import com.project.planner.trip.Trip;
 import org.springframework.beans.factory.annotation.Autowired;
